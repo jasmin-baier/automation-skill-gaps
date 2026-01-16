@@ -31,21 +31,6 @@ automation-skill-gaps/
 
 ### Scripts
 
-#### `scripts/esco/add_skill_levels.py`
-Calculates and adds hierarchy depth levels to ESCO skills based on their position in the taxonomy tree.
-
-**Usage:**
-```bash
-python scripts/esco/add_skill_levels.py
-```
-
-**Output:** `data/esco/processed/skills_with_levels.csv`
-
-**Features:**
-- Recursive depth calculation with memoization
-- Handles multiple parent paths (up to 9 parents per skill)
-- 100% validated accuracy on 13,896 skills
-
 #### `scripts/esco/map_skill_hierarchy_paths.py`
 Maps complete upward hierarchy paths for each ESCO skill, creating separate rows for skills with multiple parents.
 
@@ -61,11 +46,7 @@ python scripts/esco/map_skill_hierarchy_paths.py
 - Adds columns for each hierarchy level (IDs and labels)
 - Concatenates full path into single string (semicolon-separated)
 - Handles skills with up to 31 different parent paths
-
-### Documentation
-
-- **[docs/esco/README_SKILL_LEVELS.md](docs/esco/README_SKILL_LEVELS.md)** - Comprehensive technical documentation
-- **[docs/esco/QUICK_START_LEVELS.md](docs/esco/QUICK_START_LEVELS.md)** - Quick reference guide
+- Creates separate rows for each unique path (24,015 total rows from 13,896 skills)
 
 ### Data Files
 
@@ -81,8 +62,7 @@ python scripts/esco/map_skill_hierarchy_paths.py
 - `model_info.csv` - ESCO model metadata
 
 **Processed ESCO Data** (`data/esco/processed/`):
-- `skills_with_levels.csv` - Skills with hierarchy depth levels
-- `skills_with_hierarchy_paths.csv` - Skills with complete upward paths
+- `skills_with_hierarchy_paths.csv` - Skills with complete upward paths (24,015 rows including all path variations)
 
 ## O*NET Tools
 
@@ -118,18 +98,13 @@ See `requirements.txt` for full dependencies. Key requirements:
 
 ### ESCO Hierarchy Analysis
 
-1. **Calculate skill hierarchy levels:**
-   ```bash
-   python scripts/esco/add_skill_levels.py
-   ```
-
-2. **Map complete hierarchy paths:**
+1. **Map complete hierarchy paths:**
    ```bash
    python scripts/esco/map_skill_hierarchy_paths.py
    ```
 
-3. **View results:**
-   - Check `data/esco/processed/` for output files
+2. **View results:**
+   - Check `data/esco/processed/skills_with_hierarchy_paths.csv` for output
    - Open Jupyter notebooks in `notebooks/esco/` for analysis
 
 ### O*NET Analysis
@@ -141,11 +116,11 @@ See `requirements.txt` for full dependencies. Key requirements:
 
 ## ESCO Hierarchy Statistics
 
-- **Total skills:** 13,896
-- **Skills with multiple parents:** 4,955 (35.7%)
-- **Maximum parents per skill:** 9
+- **Total unique skills:** 13,896
+- **Total paths (with duplicates for multiple parents):** 24,015
+- **Skills with multiple parent paths:** 4,955 (35.7%)
+- **Maximum paths for a single skill:** 31
 - **Hierarchy depth:** 4-11 levels
-- **Most common level:** Level 5 (73.2% of skills)
 
 ## Contributing
 
