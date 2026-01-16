@@ -66,6 +66,25 @@ python scripts/esco/map_skill_hierarchy_paths.py
 
 ## O*NET Tools
 
+### Scripts
+
+#### `scripts/onet/map_task_hierarchy_paths.py`
+Maps complete upward hierarchy paths for each O*NET task through the work activity hierarchy: Tasks → DWAs (Detailed Work Activities) → IWAs (Intermediate Work Activities) → GWAs (Generalized Work Activities).
+
+**Usage:**
+```bash
+python scripts/onet/map_task_hierarchy_paths.py
+```
+
+**Output:** `data/onet/processed/task_hierarchy_paths.csv`
+
+**Features:**
+- Traces all unique paths from tasks through DWAs, IWAs, to Work Activities
+- Starts from Task Statements to preserve task metadata (Task Type, Incumbents Responding)
+- Creates separate rows for tasks with multiple DWA mappings (handles 1-5 paths per task)
+- Concatenates full path into single string (semicolon-separated)
+- Provides detailed statistics on hierarchy coverage and completeness
+
 ### Notebooks
 
 - `notebooks/onet/onet_data_prep.ipynb` - O*NET data preparation and analysis
@@ -73,8 +92,15 @@ python scripts/esco/map_skill_hierarchy_paths.py
 ### Data Files
 
 **Raw O*NET Data** (`data/onet/raw/`):
-- `DWA Reference.xlsx` - Detailed Work Activities reference
-- `Tasks to DWAs.xlsx` - Task-to-DWA mappings
+- `Task Statements.xlsx` - Base table with all tasks (18,797 tasks)
+- `Tasks to DWAs.xlsx` - Task-to-DWA mappings (23,851 mappings)
+- `DWA Reference.xlsx` - Complete hierarchy (DWAs → IWAs → Work Activities)
+- `IWA Reference.xlsx` - IWA definitions
+- `Work Activities.xlsx` - Work Activity ratings by occupation
+
+**Processed O*NET Data** (`data/onet/processed/`):
+- `task_hierarchy_paths.csv` - Tasks with complete upward paths (23,851 rows including all path variations)
+- `joined_tasks_dwa_iwa_elements.csv` - (Legacy) join output from notebook analysis
 
 ## Installation
 
@@ -107,20 +133,39 @@ See `requirements.txt` for full dependencies. Key requirements:
    - Check `data/esco/processed/skills_with_hierarchy_paths.csv` for output
    - Open Jupyter notebooks in `notebooks/esco/` for analysis
 
-### O*NET Analysis
+### O*NET Hierarchy Analysis
 
-1. **Open the data preparation notebook:**
+1. **Map complete hierarchy paths:**
    ```bash
-   jupyter notebook notebooks/onet/onet_data_prep.ipynb
+   python scripts/onet/map_task_hierarchy_paths.py
    ```
 
-## ESCO Hierarchy Statistics
+2. **View results:**
+   - Check `data/onet/processed/task_hierarchy_paths.csv` for output
+   - Open `notebooks/onet/onet_data_prep.ipynb` for additional analysis
+
+## Hierarchy Statistics
+
+### ESCO Hierarchy
 
 - **Total unique skills:** 13,896
 - **Total paths (with duplicates for multiple parents):** 24,015
 - **Skills with multiple parent paths:** 4,955 (35.7%)
 - **Maximum paths for a single skill:** 31
 - **Hierarchy depth:** 4-11 levels
+
+### O*NET Hierarchy
+
+- **Total unique tasks:** 18,797
+- **Total paths (with multiple DWA mappings):** 23,851
+- **Average paths per task:** 1.27
+- **Tasks with multiple paths:** 4,366 (23.2%)
+- **Maximum paths for a single task:** 5
+- **Hierarchy levels:**
+  - **37 unique Work Activities (GWAs)** - Generalized work activities
+  - **332 unique IWAs** - Intermediate work activities
+  - **2,083 unique DWAs** - Detailed work activities
+  - **18,797 unique Tasks** - Bottom level
 
 ## Contributing
 
